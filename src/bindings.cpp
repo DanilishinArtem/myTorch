@@ -12,12 +12,18 @@ PYBIND11_MODULE(libtorchcpp, m) {
         .def("print", &Tensor::print)
         .def("__getitem__", [](const Tensor& tensor, py::tuple indices) -> float {
             std::vector<int64_t> idx;
-            for(size_t i = 0; i < indices.size(); i++){
-                idx.push_back(indices[i].cast<int64_t>());
+            for (auto item : indices) {
+                idx.push_back(item.cast<int64_t>());
             }
             return tensor.at(idx);
         })
-        .def("__setitem__", &Tensor::set_value);
+        .def("__setitem__", [](const Tensor& tensor, py::tuple indices, float value) {
+            std::vector<int64_t> idx;
+            for (auto item : indices) {
+                idx.push_back(item.cast<int64_t>());
+            }
+            tensor.at(idx) = value;
+        });
     m.def("create_tensor", [](std::vector<int64_t> shape) {
         return Tensor(shape);  // Функция создания Tensor
     });

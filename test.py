@@ -9,8 +9,8 @@ tensor1 = libtorchcpp.Tensor([2, 3])  # 2x3 тензор
 tensor2 = libtorchcpp.Tensor([2, 3])  # 2x3 тензор
 
 # Заполнение тензоров
-tensor1.data = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]
-tensor2.data = [[6.0, 5.0, 4.0], [3.0, 2.0, 1.0]]
+tensor1.data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+tensor2.data = [6.0, 5.0, 4.0, 3.0, 2.0, 1.0]
 
 # Операции
 result_add = tensor1.add(tensor2)
