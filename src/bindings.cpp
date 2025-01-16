@@ -9,10 +9,15 @@ PYBIND11_MODULE(libtorchcpp, m) {
         .def(py::init<std::vector<int64_t>>())
         .def("add", &Tensor::add)
         .def("multiply", &Tensor::multiply)
-        .def("__setitem__", &Tensor::set_value)
         .def("print", &Tensor::print)
-        .def("__getitem__", (const float& (Tensor::*)(std::vector<int64_t>) const) &Tensor::operator[], py::arg("indices"))
-        .def("__getitem__", (float& (Tensor::*)(std::vector<int64_t>)) &Tensor::operator[], py::arg("indices"));
+        .def("__getitem__", [](const Tensor& tensor, py::tuple indices) -> float {
+            std::vector<int64_t> idx;
+            for(size_t i = 0; i < indices.size(); i++){
+                idx.push_back(indices[i].cast<int64_t>());
+            }
+            return tensor.at(idx);
+        })
+        .def("__setitem__", &Tensor::set_value);
     m.def("create_tensor", [](std::vector<int64_t> shape) {
         return Tensor(shape);  // Функция создания Tensor
     });

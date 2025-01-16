@@ -15,9 +15,11 @@ public:
 
     Tensor(std::vector<int64_t> shape);
 
-    float& operator[](std::vector<int64_t> indices);
+    int64_t compute_index(const std::vector<int64_t>& indices) const;
 
-    const float& operator[](std::vector<int64_t> indices) const;
+    float& at(const std::vector<int64_t>& indices);
+
+    const float& at(const std::vector<int64_t>& indices) const;
 
     void set_value(std::vector<int64_t> indices, float value);
 
