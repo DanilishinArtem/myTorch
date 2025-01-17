@@ -1,20 +1,6 @@
 #include "tensor.h"
 
 
-Tensor::Tensor(std::vector<int64_t> shape) : shape(shape) {
-    int64_t size = 1;
-    for (int64_t dim : shape) {
-        size *= dim;
-    }
-    data.resize(size, 0.0f); // Инициализируем тензор нулями
-}
-
-Tensor::Tensor(std::initializer_list<std::any> nested_data) : shape(shape) {
-    shape = infer_shape(nested_data);
-    data.reserve(compute_total_size(shape));
-    flatten_data(nested_data, data);
-}
-
 float& Tensor::at(const std::vector<int64_t>& indices){
     return this->data[this->compute_index(indices)];
 }
@@ -23,6 +9,7 @@ const float& Tensor::at(const std::vector<int64_t>& indices) const{
     return this->data[this->compute_index(indices)];
 }
 
+// check it! (maybe)
 int64_t Tensor::compute_index(const std::vector<int64_t>& indices) const{
     if(indices.size() != this->shape.size()){
         throw std::out_of_range("Number of indices is not equal to the number of dimensions");
@@ -45,32 +32,6 @@ int64_t Tensor::compute_total_size(const std::vector<int64_t>& dims) const {
         size *= dim;
     }
     return size;
-}
-
-std::vector<int64_t> Tensor::infer_shape(const std::any& nested_data) {
-    if (nested_data.type() == typeid(std::initializer_list<std::any>)) {
-        auto list = std::any_cast<std::initializer_list<std::any>>(nested_data);
-        std::vector<int64_t> dims{static_cast<int64_t>(list.size())};
-        if (!list.empty()) {
-            auto sub_shape = infer_shape(*list.begin());
-            dims.insert(dims.end(), sub_shape.begin(), sub_shape.end());
-        }
-        return dims;
-    }
-    return {};
-}
-
-void flatten_data(const std::initializer_list<std::initializer_list<float>>& nested_data, std::vector<float>& flat_data){
-    if (nested_data.type() == typeid(std::initializer_list<std::any>)) {
-        auto list = std::any_cast<std::initializer_list<std::any>>(nested_data);
-        for (const auto& item : list) {
-            flatten_data(item, flat_data);
-        }
-    } else if (nested_data.type() == typeid(float)) {
-        flat_data.push_back(std::any_cast<float>(nested_data));
-    } else {
-        throw std::invalid_argument("Некорректный формат данных.");
-    }
 }
 
 void Tensor::set_value(std::vector<int64_t> indices, float value) {
