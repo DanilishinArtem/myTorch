@@ -5,9 +5,6 @@
 #include <vector>
 #include <stdexcept>
 #include <cassert>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-
 
 class Tensor {
 public:

@@ -5,13 +5,6 @@
 namespace py = pybind11;
 
 
-// Определение шаблонной функции
-template <typename T>
-Tensor create_tensor_from_nested_data(py::object nested_data) {
-    auto vec = py::cast<std::vector<std::vector<std::vector<T>>>>(nested_data);
-    return Tensor(vec);
-}
-
 PYBIND11_MODULE(libtorchcpp, m) {
     py::class_<Tensor>(m, "Tensor")
         .def_readwrite("data", &Tensor::data)
@@ -35,8 +28,9 @@ PYBIND11_MODULE(libtorchcpp, m) {
         });
 
     // Конкретизация шаблона для вызова с вложенными данными
-    m.def("create_tensor", [](py::object nested_data) {
-        return create_tensor_from_nested_data<float>(nested_data);
+    m.def("create_tensor", [](std::vector& nested_data) {
+        return Tensor(nested_data);
+        // return create_tensor_from_nested_data<float>(nested_data);
     });
 
     // Обычный конструктор
